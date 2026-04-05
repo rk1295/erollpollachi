@@ -14,34 +14,30 @@ def load_data():
 
 df = load_data()
 
-# -------------------------------
-# Page Title
-# -------------------------------
 st.title("Elector Search")
 
 # -------------------------------
-# CSS: Force side-by-side on mobile
+# CSS: Make inputs SMALL
 # -------------------------------
 st.markdown("""
 <style>
 
-/* Force columns to stay side-by-side */
+/* Force side-by-side */
 div[data-testid="stHorizontalBlock"] {
     flex-wrap: nowrap !important;
 }
 
-/* Ensure equal width columns */
+/* Make columns tight */
 div[data-testid="column"] {
-    flex: 1 1 0% !important;
-    min-width: 0 !important;
-    max-width: 50% !important;
-    padding: 0px 4px !important;
+    max-width: 80px !important;
+    flex: 1 1 80px !important;
 }
 
-/* Compact input box */
+/* Make input boxes small */
 input {
+    width: 70px !important;
     text-align: center;
-    padding: 6px !important;
+    padding: 4px !important;
     font-size: 14px !important;
 }
 
@@ -49,7 +45,7 @@ input {
 """, unsafe_allow_html=True)
 
 # -------------------------------
-# Input Section (10 rows)
+# Input Section
 # -------------------------------
 inputs = []
 
@@ -57,24 +53,23 @@ for i in range(10):
     cols = st.columns(2)
 
     part = cols[0].text_input(
-        label=f"P{i+1}",
+        f"P{i+1}",
         key=f"part{i}",
-        placeholder="Part",
         max_chars=4
     )
 
     serial = cols[1].text_input(
-        label=f"S{i+1}",
+        f"S{i+1}",
         key=f"serial{i}",
-        placeholder="Serial",
         max_chars=4
     )
 
-    if part and serial:
+    # Ensure numeric only
+    if part.isdigit() and serial.isdigit():
         inputs.append((part, serial))
 
 # -------------------------------
-# Search Button
+# Search
 # -------------------------------
 if st.button("Search"):
     if inputs:
@@ -88,8 +83,6 @@ if st.button("Search"):
 
         result["Elector's Name"] = result["Elector's Name"].fillna("Not Found")
 
-        st.success("Results")
         st.dataframe(result, use_container_width=True)
-
     else:
-        st.warning("Enter at least one record")
+        st.warning("Enter valid numeric values")
